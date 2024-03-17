@@ -158,3 +158,15 @@ potential_calibration_cycles[['Date and Time', 'Set Point Value', 'Set Point Cha
 setpoint_values = data[['Date and Time', 'Set Point Value']]
 setpoint_values.head(20)  # Displaying the first 20 rows for inspection
 
+import matplotlib.pyplot as plt
+
+# Plotting the Set Point Values to visually inspect for calibration cycles
+plt.figure(figsize=(15, 6))
+plt.plot(data['Date and Time'], data['Set Point Value'], marker='o')
+plt.title('Set Point Values Over Time')
+plt.xlabel('Date and Time')
+plt.ylabel('Set Point Value')
+plt.xticks(rotation=45)
+plt.grid(True)
+plt.show()
+
