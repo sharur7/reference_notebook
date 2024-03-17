@@ -188,3 +188,36 @@ plt.ylabel('Set Point Value')
 plt.grid(True)
 plt.legend()
 plt.show()
+
+
+def detect_calibration_cycles(data, column='Set Point Value', threshold=0.1):
+    cycles = []
+    increasing = False
+    start_index = None
+
+    for i in range(1, len(data)):
+        if start_index is None:
+            # Start of a potential cycle
+            if data[column][i] > data[column][i-1]:
+                increasing = True
+                start_index = i-1
+        else:
+            if increasing and data[column][i] < data[column][i-1]:
+                # Switch from increasing to decreasing
+                increasing = False
+            elif not increasing and (data[column][i] > data[column][i-1] or
+                                     abs(data[column][start_index] - data[column][i]) <= threshold):
+                # End of the cycle
+                end_index = i
+                cycles.append((data['Date and Time'][start_index], data['Date and Time'][end_index]))
+                start_index = None
+                increasing = False
+
+    return cycles
+
+# Detecting calibration cycles
+calibration_cycles = detect_calibration_cycles(data)
+
+# Displaying the first few detected cycles
+calibration_cycles[:5]
+
