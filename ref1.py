@@ -170,3 +170,21 @@ plt.xticks(rotation=45)
 plt.grid(True)
 plt.show()
 
+
+from scipy.signal import find_peaks
+
+# Identifying peaks (maxima) and troughs (minima) in the 'Set Point Value'
+peaks, _ = find_peaks(data['Set Point Value'])
+troughs, _ = find_peaks(-data['Set Point Value'])
+
+# Plotting the identified peaks and troughs
+plt.figure(figsize=(15, 6))
+plt.plot(data['Date and Time'], data['Set Point Value'], label='Set Point Value')
+plt.scatter(data['Date and Time'][peaks], data['Set Point Value'][peaks], color='red', label='Peaks')
+plt.scatter(data['Date and Time'][troughs], data['Set Point Value'][troughs], color='green', label='Troughs')
+plt.title('Set Point Value Over Time with Peaks and Troughs')
+plt.xlabel('Date and Time')
+plt.ylabel('Set Point Value')
+plt.grid(True)
+plt.legend()
+plt.show()
