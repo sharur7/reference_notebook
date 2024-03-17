@@ -10,6 +10,25 @@ data.head()
 
 import numpy as np
 
+
+
+# Feature Engineering: Creating new features for venting rate
+
+# We might use 'Time Fast Vent', 'Time Coarse Control', and 'Time Fine Control' as indicators of venting time
+# We'll create a feature for the rate of venting - this could be time of venting over distance travelled
+data['Rate Fast Vent'] = data['Time Fast Vent'] / data['Distance Travelled']
+data['Rate Coarse Control'] = data['Time Coarse Control'] / data['Distance Travelled']
+data['Rate Fine Control'] = data['Time Fine Control'] / data['Distance Travelled']
+
+# Replace infinite values with NaN
+data.replace([float('inf'), -float('inf')], np.nan, inplace=True)
+
+# Descriptive statistics for these new features
+rate_features_descriptive_stats = data[['Rate Fast Vent', 'Rate Coarse Control', 'Rate Fine Control']].describe()
+
+rate_features_descriptive_stats
+
+
 # Replacing infinite values with NaN
 data['Rate Fast Vent'] = data['Rate Fast Vent'].replace([np.inf, -np.inf], np.nan)
 data['Rate Coarse Control'] = data['Rate Coarse Control'].replace([np.inf, -np.inf], np.nan)
@@ -94,4 +113,48 @@ confusion_mat = confusion_matrix(y_test, y_pred)
 
 accuracy, confusion_mat, classification_rep
 
+
+
+
+# Assuming specific setpoint values are not provided, we will look for notable patterns
+# Typically, in hysteresis testing, setpoints might alternate between high and low values
+
+# A simple approach to identify potential calibration cycles:
+# 1. Find large changes in the set point value that might indicate a switch between high and low values
+# 2. Look at the frequency and regularity of these changes
+
+# Calculating changes in setpoint values
+data['Set Point Change'] = data['Set Point Value'].diff().abs()
+
+# Assuming a significant change threshold (this could be adjusted based on domain knowledge)
+significant_change_threshold = data['Set Point Change'].mean() + data['Set Point Change'].std()
+
+# Identifying potential calibration cycles
+potential_calibration_cycles = data[data['Set Point Change'] > significant_change_threshold]
+
+# Displaying potential calibration cycles
+potential_calibration_cycles[['Date and Time', 'Set Point Value', 'Set Point Change']]
+
+\
+
+# Reattempting the analysis with a different approach
+
+# Calculating the absolute change in setpoint values between consecutive measurements
+data['Set Point Change'] = data['Set Point Value'].diff().abs()
+
+# Assuming a significant change threshold
+# This threshold can be adjusted based on domain knowledge or specific criteria for calibration cycles
+significant_change_threshold = data['Set Point Change'].mean() + data['Set Point Change'].std()
+
+# Identifying rows where the setpoint change is significant, indicating potential calibration cycles
+potential_calibration_cycles = data[data['Set Point Change'] > significant_change_threshold]
+
+# Displaying potential calibration cycles with their corresponding setpoint values and changes
+potential_calibration_cycles[['Date and Time', 'Set Point Value', 'Set Point Change']].head()  # Showing the top rows
+
+
+# Directly inspecting the setpoint values to spot potential calibration cycles
+# Displaying a portion of the setpoint values to observe any notable patterns
+setpoint_values = data[['Date and Time', 'Set Point Value']]
+setpoint_values.head(20)  # Displaying the first 20 rows for inspection
 
