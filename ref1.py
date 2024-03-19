@@ -367,6 +367,12 @@ peaks, _ = find_peaks(df['Set Point Value'], distance=10)
 # Detect troughs
 troughs, _ = find_peaks(-df['Set Point Value'], distance=10)
 
+troughs = []
+for i in range(1, len(peaks)):
+    trough = np.argmin(df['Set Point Value'][peaks[i-1]:peaks[i]]) + peaks[i-1]
+    troughs.append(trough)
+troughs.append(np.argmin(df['Set Point Value'][peaks[-1]:]) + peaks[-1])
+
 # Initialize lists to store calibration cycles
 calibration_cycles = []
 
