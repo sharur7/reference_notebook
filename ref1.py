@@ -409,3 +409,12 @@ for i in range(1, len(df)):
 print("Calibration Cycles:")
 for cycle_index in calibration_cycles:
     print("Cycle: Index:", cycle_index, "Time:", df['Date and Time'][cycle_index], "Set Point Value:", df['Set Point Value'][cycle_index])
+
+
+for i in range(len(df)):
+    if i == 0:
+        continue  # Skip the first data point
+    if i == len(df) - 1:
+        break  # Stop at the last data point
+    if df['Set Point Value'][i] > df['Set Point Value'][i - 1] and df['Set Point Value'][i] > df['Set Point Value'][i + 1]:
+        calibration_cycles.append(i)
