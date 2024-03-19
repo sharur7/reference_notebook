@@ -264,3 +264,57 @@ def find_calibration_cycles(set_point_values, threshold=100):
 # Find calibration cycles
 # calibration_cycles = find_calibration_cycles(set_point_values)
 # print(calibration_cycles)
+
+
+
+import pandas as pd
+from scipy.signal import find_peaks
+
+# Sample data
+data = {
+    "Date and Time": [
+        "08-03-2024 12:11", "08-03-2024 12:12", "08-03-2024 13:00",
+        "08-03-2024 13:01", "08-03-2024 13:02", "08-03-2024 13:03",
+        "08-03-2024 13:04", "08-03-2024 13:04", "08-03-2024 13:04",
+        "08-03-2024 13:05", "08-03-2024 13:05", "08-03-2024 13:05",
+        "08-03-2024 13:05", "08-03-2024 13:06", "08-03-2024 13:06",
+        "08-03-2024 13:07", "08-03-2024 13:07", "08-03-2024 13:07",
+        "08-03-2024 13:08", "08-03-2024 13:08", "08-03-2024 13:08",
+        "08-03-2024 13:09", "08-03-2024 13:09", "08-03-2024 13:09",
+        "08-03-2024 13:09", "08-03-2024 13:10"
+    ],
+    "Set Point Count": [
+        550, 551, 552, 553, 554, 555, 556, 557, 558, 559,
+        560, 561, 562, 563, 564, 565, 566, 567, 568, 569,
+        570, 571, 572, 573, 574, 575
+    ],
+    "Set Point Value": [
+        0, -200.199997, 0, -450.100006, -450.100006, -450.100006, -450.100006, -200.199997, -2.1, 6.6,
+        356.5, 976.5, 1496.300049, 3234.780029, 4963.25, 6000.25, 4963.25, 3234.780029, 1496.300049, 976.5,
+        356.5, 6.6, -2.1, -200.199997, -450.00006, -200.199997
+    ]
+}
+
+# Convert to DataFrame
+df = pd.DataFrame(data)
+
+# Detect peaks
+peaks, _ = find_peaks(df['Set Point Value'], distance=10)
+
+# Detect troughs
+troughs, _ = find_peaks(-df['Set Point Value'], distance=10)
+
+# Initialize lists to store calibration cycles
+calibration_cycles = []
+
+# Loop through peaks and troughs to find calibration cycles
+for i in range(min(len(peaks), len(troughs))):
+    start_index = peaks[i]
+    end_index = troughs[i]
+    if start_index < end_index:
+        calibration_cycles.append((start_index, end_index))
+
+# Print calibration cycles
+print("Calibration Cycles:")
+for cycle in calibration_cycles:
+    print("Cycle: Start Index:", cycle[0], "End Index:", cycle[1])
