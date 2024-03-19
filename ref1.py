@@ -267,6 +267,69 @@ def find_calibration_cycles(set_point_values, threshold=100):
 
 
 
+
+
+
+import pandas as pd
+import matplotlib.pyplot as plt
+from scipy.signal import find_peaks
+
+# Sample data
+data = {
+    "Date and Time": [
+        "08-03-2024 12:11", "08-03-2024 12:12", "08-03-2024 13:00",
+        "08-03-2024 13:01", "08-03-2024 13:02", "08-03-2024 13:03",
+        "08-03-2024 13:04", "08-03-2024 13:04", "08-03-2024 13:04",
+        "08-03-2024 13:05", "08-03-2024 13:05", "08-03-2024 13:05",
+        "08-03-2024 13:05", "08-03-2024 13:06", "08-03-2024 13:06",
+        "08-03-2024 13:07", "08-03-2024 13:07", "08-03-2024 13:07",
+        "08-03-2024 13:08", "08-03-2024 13:08", "08-03-2024 13:08",
+        "08-03-2024 13:09", "08-03-2024 13:09", "08-03-2024 13:09",
+        "08-03-2024 13:09", "08-03-2024 13:10"
+    ],
+    "Set Point Count": [
+        550, 551, 552, 553, 554, 555, 556, 557, 558, 559,
+        560, 561, 562, 563, 564, 565, 566, 567, 568, 569,
+        570, 571, 572, 573, 574, 575
+    ],
+    "Set Point Value": [
+        0, -200.199997, 0, -450.100006, -450.100006, -450.100006, -450.100006, -200.199997, -2.1, 6.6,
+        356.5, 976.5, 1496.300049, 3234.780029, 4963.25, 6000.25, 4963.25, 3234.780029, 1496.300049, 976.5,
+        356.5, 6.6, -2.1, -200.199997, -450.00006, -200.199997
+    ]
+}
+
+# Convert to DataFrame
+df = pd.DataFrame(data)
+
+# Convert 'Date and Time' column to datetime
+df['Date and Time'] = pd.to_datetime(df['Date and Time'], format='%d-%m-%Y %H:%M')
+
+# Plotting
+plt.figure(figsize=(10, 6))
+plt.plot(df['Date and Time'], df['Set Point Value'], marker='o', linestyle='-')
+plt.title('Set Point Values over Date and Time')
+plt.xlabel('Date and Time')
+plt.ylabel('Set Point Value')
+plt.xticks(rotation=45)
+plt.grid(True)
+
+# Detect peaks
+peaks, _ = find_peaks(df['Set Point Value'], distance=10)
+plt.plot(df['Date and Time'].iloc[peaks], df['Set Point Value'].iloc[peaks], "X", color='red', markersize=8, label='Peaks')
+
+# Detect troughs
+troughs, _ = find_peaks(-df['Set Point Value'], distance=10)
+plt.plot(df['Date and Time'].iloc[troughs], df['Set Point Value'].iloc[troughs], "o", color='green', markersize=8, label='Troughs')
+
+# Show legend
+plt.legend()
+
+# Show plot
+plt.tight_layout()
+plt.show()
+
+
 import pandas as pd
 from scipy.signal import find_peaks
 
