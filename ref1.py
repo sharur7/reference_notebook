@@ -221,3 +221,46 @@ calibration_cycles = detect_calibration_cycles(data)
 # Displaying the first few detected cycles
 calibration_cycles[:5]
 
+
+
+import pandas as pd
+
+def find_calibration_cycles(set_point_values, threshold=100):
+    """
+    Find calibration cycles in the set point values.
+
+    Args:
+    - set_point_values (list): The list of set point values.
+    - threshold (float): The value difference considered significant for starting a cycle.
+
+    Returns:
+    - list of tuples: Each tuple contains the start and end indices of a calibration cycle.
+    """
+    cycles = []
+    i = 0
+    while i < len(set_point_values) - 1:
+        # Find start of potential cycle
+        if abs(set_point_values[i+1] - set_point_values[i]) > threshold:
+            cycle_start = i
+            peak_found = False
+            # Find peak of cycle
+            for j in range(i + 1, len(set_point_values) - 1):
+                if (set_point_values[j] > set_point_values[j - 1] and set_point_values[j] > set_point_values[j + 1]) or \
+                   (set_point_values[j] < set_point_values[j - 1] and set_point_values[j] < set_point_values[j + 1]):
+                    peak_found = True
+                elif peak_found and abs(set_point_values[j] - set_point_values[cycle_start]) < threshold:
+                    # End of cycle found
+                    cycles.append((cycle_start, j))
+                    i = j - 1  # Update outer loop index to continue after current cycle
+                    break
+        i += 1
+    return cycles
+
+# Example usage:
+# Load your dataset
+# df = pd.read_excel("path_to_your_file.xlsx")
+# set_point_values = df['Set Point Value'].tolist()
+
+# Find calibration cycles
+# calibration_cycles = find_calibration_cycles(set_point_values)
+# print(calibration_cycles)
