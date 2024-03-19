@@ -387,3 +387,15 @@ for i in range(min(len(peaks), len(troughs))):
 print("Calibration Cycles:")
 for cycle in calibration_cycles:
     print("Cycle: Start Index:", cycle[0], "End Index:", cycle[1])
+
+
+
+for i in range(1, len(df) - 1):
+    if df['Set Point Value'][i] > df['Set Point Value'][i - 1] and df['Set Point Value'][i] > df['Set Point Value'][i + 1]:
+        if df['Set Point Value'][i - 1] > df['Set Point Value'][i + 1]:
+            calibration_cycles.append(i)
+
+# Print calibration cycles
+print("Calibration Cycles:")
+for cycle_index in calibration_cycles:
+    print("Cycle: Index:", cycle_index, "Time:", df['Date and Time'][cycle_index], "Set Point Value:", df['Set Point Value'][cycle_index])
