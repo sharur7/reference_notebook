@@ -235,3 +235,16 @@ mae = mean_absolute_error(test['Distance Travelled'], forecast_test_mean)
 rmse = np.sqrt(mean_squared_error(test['Distance Travelled'], forecast_test_mean))
 
 mae, rmse
+
+# Display unique values in the "Service Status" column to understand its structure
+unique_service_status = data['Service Status'].unique()
+unique_service_status
+
+
+# Identify the last date in the dataset
+last_date = data.index[-1]
+
+# Calculate the next service date by adding 25 days to the last date
+next_service_date = last_date + pd.Timedelta(days=25)
+
+last_date, next_service_date
