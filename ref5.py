@@ -74,3 +74,13 @@ data.loc[(data['Volume Cluster KMeans'] == 0) & (data['Estimated Volume Adjusted
 cluster_0_summary_after_adjustment = data[data['Volume Cluster KMeans'] == 0]['Estimated Volume Adjusted'].describe()
 print(cluster_0_summary_after_adjustment)
 
+
+# Assuming 'data' is your DataFrame and it includes a 'Volume Cluster KMeans' column for cluster labels
+
+# Step 2: Adjust values over 30 to be exactly 30 in Cluster 0
+data.loc[(data['Volume Cluster KMeans'] == 0) & (data['Estimated Volume Adjusted'] > 30), 'Estimated Volume Adjusted'] = 30
+
+# Step 3: Verify the adjustment by recalculating the maximum value for Cluster 0
+max_value_cluster_0 = data[data['Volume Cluster KMeans'] == 0]['Estimated Volume Adjusted'].max()
+print(f"The adjusted maximum value for Cluster 0 is now: {max_value_cluster_0}")
+
