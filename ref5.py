@@ -62,3 +62,15 @@ setup_change_flags
 setup_change_data = data[data['Setup Change'] == True][['Date and Time', 'Set Point Value']]
 
 setup_change_data
+
+
+
+# Assuming 'data' is your DataFrame and 'Volume Cluster KMeans' identifies the clusters
+
+# Step 2 & 3: Adjust the outlier value from 220 to 30 in Cluster 0
+data.loc[(data['Volume Cluster KMeans'] == 0) & (data['Estimated Volume Adjusted'] == 220), 'Estimated Volume Adjusted'] = 30
+
+# Step 4: Recalculate and display the summary statistics for Cluster 0
+cluster_0_summary_after_adjustment = data[data['Volume Cluster KMeans'] == 0]['Estimated Volume Adjusted'].describe()
+print(cluster_0_summary_after_adjustment)
+
