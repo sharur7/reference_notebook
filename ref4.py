@@ -124,3 +124,34 @@ cycles_summary = {
 
 cycles_summary
 
+def detect_calibration_cycles(set_point_values):
+    """
+    Detect calibration cycles based on the set point values. 
+    A cycle starts and ends at the same point and has at least one different value in between.
+
+    Parameters:
+    - set_point_values: pandas Series of set point values.
+
+    Returns:
+    - cycles: List of tuples, each representing a cycle (start_index, end_index).
+    """
+    cycles = []
+    cycle_start = None
+
+    for i in range(1, len(set_point_values)):
+        # Start of a new cycle
+        if cycle_start is None and set_point_values[i] != set_point_values[i-1]:
+            cycle_start = i - 1
+
+        # End of a cycle
+        elif cycle_start is not None and set_point_values[i] == set_point_values[cycle_start]:
+            cycles.append((cycle_start, i))
+            cycle_start = None  # Reset for the next cycle
+
+    return cycles
+
+# Detect calibration cycles
+calibration_cycles = detect_calibration_cycles(data['Set Point Value'])
+
+# Display the first few cycles to verify the method is working as expected
+calibration_cycles[:5]
