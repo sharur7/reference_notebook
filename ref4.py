@@ -93,4 +93,34 @@ evaluation_report = classification_report(y_test, y_pred)
 
 evaluation_report
 
+def detect_calibration_cycles(set_point_values):
+    """
+    Detects calibration cycles based on set point values.
+    A cycle is defined as a sequence starting and ending at the same set point value, not including the starting point itself.
+    """
+    cycles = []  # List to hold the start and end indices of each cycle
+    start_index = None  # Starting index of a potential cycle
+    
+    for i, value in enumerate(set_point_values):
+        if start_index is None:
+            # Potential start of a new cycle
+            start_index = i
+        elif value == set_point_values[start_index]:
+            # End of a cycle, append start and end indices to the cycles list
+            if i > start_index:  # Ensures the cycle includes more than just the starting point
+                cycles.append((start_index, i))
+                start_index = None  # Reset for the next cycle
+    
+    return cycles
+
+# Detect calibration cycles in the Set Point Value column
+calibration_cycles_indices = detect_calibration_cycles(data['Set Point Value'])
+
+# Summary of detected cycles
+cycles_summary = {
+    'Number of Cycles': len(calibration_cycles_indices),
+    'Cycle Indices': calibration_cycles_indices
+}
+
+cycles_summary
 
