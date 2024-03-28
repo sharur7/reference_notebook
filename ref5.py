@@ -84,3 +84,27 @@ data.loc[(data['Volume Cluster KMeans'] == 0) & (data['Estimated Volume Adjusted
 max_value_cluster_0 = data[data['Volume Cluster KMeans'] == 0]['Estimated Volume Adjusted'].max()
 print(f"The adjusted maximum value for Cluster 0 is now: {max_value_cluster_0}")
 
+
+
+import numpy as np
+from scipy.signal import medfilt
+
+# Original estimated volume data
+original_estimated_volume = [
+    18.5, 18.7, 18.9, 18.3, 19.1, 20.6, 18, 18, 18, 50.5, 50, 50.4,
+    51.5, 51, 51.9, 50, 50, 50.6, 50, 90.1, 90, 90.5, 90, 91, 91.6, 90, 90
+]
+
+# Apply median filter
+window_size = 3
+normalized_estimated_volume = medfilt(original_estimated_volume, kernel_size=window_size)
+
+# Print normalized estimated volume
+print("Original Estimated Volume:")
+print(original_estimated_volume)
+print("\nNormalized Estimated Volume (Using Median Filter with window size {}):".format(window_size))
+print(normalized_estimated_volume)
+
+
+
+
