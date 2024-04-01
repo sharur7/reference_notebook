@@ -55,6 +55,23 @@ grouped_data.rename(columns={
 grouped_data.head()
 
 
+# Calculating standard deviation for the relevant time-related parameters by 'Set Point Value'
+std_data = data.groupby('Set Point Value').agg({
+    'Time In Ctrl. Vent': 'std',
+    'Time Centering': 'std'
+}).reset_index()
+
+# Renaming columns for clarity
+std_data.rename(columns={
+    'Time In Ctrl. Vent': 'Std. Dev. Time In Ctrl. Vent',
+    'Time Centering': 'Std. Dev. Time In Centering'
+}, inplace=True)
+
+std_data.head()
+
+
+
+
 # Replacing NaN values with 0 to indicate no variability
 std_data_filled = std_data.fillna(0)
 
