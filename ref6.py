@@ -165,3 +165,32 @@ all_detected_cycles = detect_all_cycles(updated_df['Set Point Value'].tolist())
 # Display the first few detected cycles from the updated dataset
 all_detected_cycles[:5]
 
+
+
+
+
+
+
+def detect_strict_cycles(Setpoints):
+    cycles = []
+    used_indices = set()  # Keep track of indices already included in a cycle
+
+    for start_index in range(len(Setpoints) - 1):
+        if start_index in used_indices:
+            continue  # Skip indices that have already been part of a cycle
+        
+        for end_index in range(start_index + 1, len(Setpoints)):
+            # Ensure the end index hasn't been used and matches the start value
+            if end_index not in used_indices and Setpoints[start_index] == Setpoints[end_index]:
+                # Add the indices of this cycle to the used set to avoid reuse
+                used_indices.update(range(start_index, end_index + 1))
+                cycles.append((start_index, end_index))
+                break  # Move to the next start_index after finding a cycle
+
+    return cycles
+
+# Apply the strictly non-overlapping function to the 'Set Point Value' column of the updated dataframe
+strict_cycles = detect_strict_cycles(updated_df['Set Point Value'].tolist())
+
+# Display the first few strictly non-overlapping detected cycles from the updated dataset
+strict_cycles[:5]
