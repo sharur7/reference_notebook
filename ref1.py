@@ -418,3 +418,30 @@ for i in range(len(df)):
         break  # Stop at the last data point
     if df['Set Point Value'][i] > df['Set Point Value'][i - 1] and df['Set Point Value'][i] > df['Set Point Value'][i + 1]:
         calibration_cycles.append(i)
+
+
+
+python
+def detect_cal_cycles(Setpoints):
+    cycles = []
+    start_index = None
+
+    for i in range(len(Setpoints)):
+        if start_index is None:
+            start_index = i
+        elif Setpoints[i] == Setpoints[start_index]:
+            if i == len(Setpoints) - 1:
+                cycles.append((start_index, i))
+            else:
+                continue
+        elif start_index is not None:
+            if i - start_index > 1:
+                cycles.append((start_index, i - 1))
+            start_index = i
+
+    return cycles
+
+Setpoints = [0, -400, 0, 300, 200, 900, 6, 900]
+cycles = detect_cal_cycles(Setpoints)
+print(cycles)
+```
