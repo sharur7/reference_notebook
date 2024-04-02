@@ -194,3 +194,35 @@ strict_cycles = detect_strict_cycles(updated_df['Set Point Value'].tolist())
 
 # Display the first few strictly non-overlapping detected cycles from the updated dataset
 strict_cycles[:5]
+
+
+
+
+# Convert 'Date and Time' column to datetime format
+updated_df['Date and Time'] = pd.to_datetime(updated_df['Date and Time'])
+
+# Initialize a list to hold the calculated results for each cycle
+cycle_calculations = []
+
+for start_index, end_index in strict_cycles:
+    # Calculate total time in cycle in seconds
+    time_in_cycle = (updated_df.loc[end_index, 'Date and Time'] - updated_df.loc[start_index, 'Date and Time']).total_seconds()
+    
+    # Sum 'Time to Control Vent' within the cycle
+    total_time_to_control_vent = updated_df.loc[start_index:end_index, 'Time In Ctrl. Vent'].sum()
+    
+    # Sum 'Time in Centering' within the cycle
+    total_time_in_centering = updated_df.loc[start_index:end_index, 'Time Centering'].sum()
+    
+    cycle_calculations.append({
+        'Cycle': (start_index, end_index),
+        'Total Time in Cycle (seconds)': time_in_cycle,
+        'Total Time in Control Vent': total_time_to_control_vent,
+        'Total Time in Centering': total_time_in_centering
+    })
+
+# Convert the results to a DataFrame for better readability
+cycle_calculations_df = pd.DataFrame(cycle_calculations)
+
+cycle_calculations_df
+
