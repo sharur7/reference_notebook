@@ -144,3 +144,24 @@ simplified_problematic_classification = max_min_diff[['Set Point Value', ('Time 
 simplified_problematic_classification.head()
 
 
+
+
+def detect_all_cycles(Setpoints):
+    cycles = []
+    for start_index in range(len(Setpoints)):
+        for end_index in range(start_index + 1, len(Setpoints)):
+            if Setpoints[start_index] == Setpoints[end_index]:
+                # Check if the detected cycle overlaps with any previously detected cycle
+                overlap = any(start_index < cycle[1] and end_index > cycle[0] for cycle in cycles)
+                if not overlap:
+                    cycles.append((start_index, end_index))
+                    break  # Move to the next start_index after finding a non-overlapping cycle
+
+    return cycles
+
+# Apply the improved function to the 'Set Point Value' column of the updated dataframe
+all_detected_cycles = detect_all_cycles(updated_df['Set Point Value'].tolist())
+
+# Display the first few detected cycles from the updated dataset
+all_detected_cycles[:5]
+
