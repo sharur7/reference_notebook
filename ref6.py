@@ -226,3 +226,36 @@ cycle_calculations_df = pd.DataFrame(cycle_calculations)
 
 cycle_calculations_df
 
+
+
+
+
+
+
+
+
+# Initialize a list to hold the cycle characteristics
+cycle_characteristics = []
+
+for start_index, end_index in strict_cycles:
+    # Extract setpoint values for the cycle
+    cycle_setpoints = updated_df.loc[start_index:end_index, 'Set Point Value']
+    
+    # Calculate characteristics
+    range_setpoints = cycle_setpoints.max() - cycle_setpoints.min()
+    average_setpoint = cycle_setpoints.mean()
+    time_in_control_vent = updated_df.loc[start_index:end_index, 'Time In Ctrl. Vent'].sum()
+    time_in_centering = updated_df.loc[start_index:end_index, 'Time Centering'].sum()
+    
+    cycle_characteristics.append({
+        'Cycle': (start_index, end_index),
+        'Range of Setpoints': range_setpoints,
+        'Average Setpoint': average_setpoint,
+        'Total Time in Control Vent': time_in_control_vent,
+        'Total Time in Centering': time_in_centering
+    })
+
+# Convert to DataFrame for easier handling
+cycle_characteristics_df = pd.DataFrame(cycle_characteristics)
+
+cycle_characteristics_df
