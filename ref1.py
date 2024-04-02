@@ -468,3 +468,36 @@ Setpoints = [0, -400, 0, 300, 200, 900, 6, 900]
 cycles = detect_cal_cycles(Setpoints)
 print(cycles)
 ```
+
+
+
+```python
+def detect_cal_cycles(Setpoints):
+    cycles = []
+    start_index = None
+    visited = set()
+
+    for i, value in enumerate(Setpoints):
+        if i in visited:
+            continue
+        cycle = [i]
+        current_index = i
+        next_index = Setpoints[current_index]
+
+        while next_index != i:
+            if next_index in cycle:
+                # Detected a cycle that is not consecutive
+                cycle_start = cycle.index(next_index)
+                cycles.append(tuple(cycle[cycle_start:]))
+                break
+            cycle.append(next_index)
+            visited.add(next_index)
+            current_index = next_index
+            next_index = Setpoints[current_index]
+
+    return cycles
+
+# Test the function
+Setpoints = [0, 40, 0, 5, 4, 7, 4]
+print(detect_cal_cycles(Setpoints))
+```
